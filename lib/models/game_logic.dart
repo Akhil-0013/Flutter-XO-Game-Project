@@ -14,6 +14,7 @@ class GameLogic {
   bool isGameOver = false;
   WinningMatch? winningMatch;
   bool isTie = false;
+  int moveCount = 0;
 
   final Random _random = Random();
 
@@ -25,11 +26,13 @@ class GameLogic {
   PlayerMark get aiPlayer => humanPlayer.opponent;
 
   void resetBoard() {
-    board = List.filled(9, PlayerMark.none);
-    currentTurn = PlayerMark.x;
-    isGameOver = false;
-    winningMatch = null;
-    isTie = false;
+  board = List.filled(9, PlayerMark.none);
+  currentTurn = PlayerMark.x;
+  isGameOver = false;
+  winningMatch = null;
+  isTie = false;
+  moveCount = 0;
+}
   }
 
   void resetScores() {
@@ -46,6 +49,7 @@ class GameLogic {
     }
 
     board[index] = currentTurn;
+    moveCount++;
 
     final win = checkWin(board);
     if (win != null) {
