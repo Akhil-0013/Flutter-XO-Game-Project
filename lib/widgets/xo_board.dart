@@ -21,71 +21,90 @@ class XoBoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.0,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: const Color(0xFF1E293B),
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: const Color(0xFF334155), width: 2),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.35),
-              blurRadius: 25,
-              offset: const Offset(0, 10),
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Keep the board responsive while preventing it from becoming too large.
+    final boardSize = (screenWidth - 48).clamp(280.0, 420.0);
+
+    return Center(
+      child: SizedBox(
+        width: boardSize,
+        height: boardSize,
+        child: Container(
+          margin: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 12,
+          ),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1E293B),
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(
+              color: const Color(0xFF334155),
+              width: 2,
             ),
-          ],
-        ),
-        child: Stack(
-          children: [
-            // Grid of 9 cells
-            GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 9,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.35),
+                blurRadius: 25,
+                offset: const Offset(0, 10),
               ),
-              itemBuilder: (context, index) {
-                final mark = board[index];
-                final isWinningTile =
-                    winningMatch?.winningIndices.contains(index) ?? false;
+            ],
+          ),
+          child: Stack(
+            children: [
+              // Grid of 9 cells
+              GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                itemCount: 9,
+                gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                ),
+                itemBuilder: (context, index) {
+                  final mark = board[index];
 
-                return _BoardTile(
-                  index: index,
-                  mark: mark,
-                  isWinning: isWinningTile,
-                  onTap: () {
-                    if (isInteractive && mark == PlayerMark.none) {
-                      HapticFeedback.lightImpact();
-                      onTileTapped(index);
-                    }
-                  },
-                );
-              },
-            ),
+                  final isWinningTile =
+                      winningMatch?.winningIndices.contains(index) ?? false;
 
-            // Winning strike line overlay
-            if (winningMatch != null && winAnimation != null)
-              AnimatedBuilder(
-                animation: winAnimation!,
-                builder: (context, child) {
-                  return CustomPaint(
-                    size: Size.infinite,
-                    painter: WinningLinePainter(
-                      winningMatch: winningMatch!,
-                      animationProgress: winAnimation!.value,
-                      lineColor: winningMatch!.winner == PlayerMark.x
-                          ? const Color(0xFFF43F5E)
-                          : const Color(0xFF06B6D4),
-                    ),
+                  return _BoardTile(
+                    index: index,
+                    mark: mark,
+                    isWinning: isWinningTile,
+                    onTap: () {
+                      if (isInteractive &&
+                          mark == PlayerMark.none) {
+                        HapticFeedback.lightImpact();
+                        onTileTapped(index);
+                      }
+                    },
                   );
                 },
               ),
-          ],
+
+              // Winning strike line overlay
+              if (winningMatch != null && winAnimation != null)
+                AnimatedBuilder(
+                  animation: winAnimation!,
+                  builder: (context, child) {
+                    return CustomPaint(
+                      size: Size.infinite,
+                      painter: WinningLinePainter(
+                        winningMatch: winningMatch!,
+                        animationProgress: winAnimation!.value,
+                        lineColor:
+                            winningMatch!.winner == PlayerMark.x
+                                ? const Color(0xFFF43F5E)
+                                : const Color(0xFF06B6D4),
+                      ),
+                    );
+                  },
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -112,23 +131,29 @@ class _BoardTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(18),
-        splashColor: const Color(0xFF38BDF8).withValues(alpha: 0.2),
-        highlightColor: const Color(0xFF38BDF8).withValues(alpha: 0.1),
+        splashColor:
+            const Color(0xFF38BDF8).withValues(alpha: 0.2),
+        highlightColor:
+            const Color(0xFF38BDF8).withValues(alpha: 0.1),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           decoration: BoxDecoration(
             color: isWinning
                 ? (mark == PlayerMark.x
-                    ? const Color(0xFFF43F5E).withValues(alpha: 0.2)
-                    : const Color(0xFF06B6D4).withValues(alpha: 0.2))
-                : const Color(0xFF0F172A).withValues(alpha: 0.7),
+                    ? const Color(0xFFF43F5E)
+                        .withValues(alpha: 0.2)
+                    : const Color(0xFF06B6D4)
+                        .withValues(alpha: 0.2))
+                : const Color(0xFF0F172A)
+                    .withValues(alpha: 0.7),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color: isWinning
                   ? (mark == PlayerMark.x
                       ? const Color(0xFFF43F5E)
                       : const Color(0xFF06B6D4))
-                  : const Color(0xFF334155).withValues(alpha: 0.6),
+                  : const Color(0xFF334155)
+                      .withValues(alpha: 0.6),
               width: isWinning ? 2.5 : 1.5,
             ),
           ),
@@ -147,13 +172,16 @@ class _BoardTile extends StatelessWidget {
           size: 58,
           isWinning: isWinning,
         );
+
       case PlayerMark.o:
         return OMarkWidget(
           size: 58,
           isWinning: isWinning,
         );
+
       case PlayerMark.none:
         return const SizedBox.shrink();
     }
   }
 }
+
