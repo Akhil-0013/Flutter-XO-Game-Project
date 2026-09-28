@@ -33,9 +33,8 @@ class GameLogic {
   isTie = false;
   moveCount = 0;
 }
-  }
-
-  void resetScores() {
+  
+void resetScores() {
     scoreX = 0;
     scoreO = 0;
     scoreTies = 0;
