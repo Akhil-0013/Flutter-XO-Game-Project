@@ -1,3 +1,9 @@
+## Abstract
+
+This project is a Flutter-based Tic-Tac-Toe game designed to provide a simple and interactive gaming experience. The game allows two players to play against each other or a player to compete against the computer. It includes different difficulty levels, with an AI system that uses the Minimax algorithm to make intelligent moves. The application also keeps track of the game state, detects wins and draws, and provides a simple and user-friendly interface.
+
+The main purpose of this project is to understand how Flutter can be used to develop interactive mobile applications while applying basic concepts of game development and artificial intelligence. The project also focuses on keeping the code organized into different components, making it easier to understand, test, and improve. Overall, the application demonstrates how a classic game like Tic-Tac-Toe can be developed into a functional mobile application using Flutter and Dart.
+
 # 🎮 XO Game (Tic Tac Toe) - Flutter
 
 A sleek, modern, and high-performance **XO Game (Tic Tac Toe)** cross-platform application built with **Flutter** and **Dart**, designed specifically for **Android** and **iOS**.
