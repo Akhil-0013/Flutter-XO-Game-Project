@@ -1,3 +1,4 @@
+```dart
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,6 +32,7 @@ class _GameScreenState extends State<GameScreen>
   @override
   void initState() {
     super.initState();
+
     _game = GameLogic(
       gameMode: widget.gameMode,
       humanPlayer: widget.humanPlayer,
@@ -40,6 +42,7 @@ class _GameScreenState extends State<GameScreen>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+
     _winAnimation = CurvedAnimation(
       parent: _winAnimController,
       curve: Curves.easeOutCubic,
@@ -77,12 +80,15 @@ class _GameScreenState extends State<GameScreen>
   void _handleMoveResult() {
     if (_game.isGameOver) {
       HapticFeedback.heavyImpact();
+
       if (_game.winningMatch != null) {
         _winAnimController.forward(from: 0.0);
       }
+
       Future.delayed(const Duration(milliseconds: 700), () {
         if (mounted) _showGameOverDialog();
       });
+
       return;
     }
 
@@ -100,11 +106,14 @@ class _GameScreenState extends State<GameScreen>
 
     Timer(const Duration(milliseconds: 500), () {
       if (!mounted || _game.isGameOver) {
-        if (mounted) setState(() => _isAiThinking = false);
+        if (mounted) {
+          setState(() => _isAiThinking = false);
+        }
         return;
       }
 
       final aiMove = _game.calculateAiMove();
+
       if (aiMove != null) {
         _game.makeMove(aiMove);
       }
@@ -119,6 +128,7 @@ class _GameScreenState extends State<GameScreen>
 
   void _resetMatch() {
     _winAnimController.reset();
+
     setState(() {
       _game.resetBoard();
       _isAiThinking = false;
@@ -155,6 +165,7 @@ class _GameScreenState extends State<GameScreen>
     } else if (_game.gameMode == GameMode.passAndPlay) {
       title = 'Player ${winner?.label} Wins!';
       subtitle = 'Outstanding strategy!';
+
       iconWidget = winner == PlayerMark.x
           ? const XMarkWidget(size: 64, isWinning: true)
           : const OMarkWidget(size: 64, isWinning: true);
@@ -162,6 +173,7 @@ class _GameScreenState extends State<GameScreen>
       if (winner == _game.humanPlayer) {
         title = 'Victory!';
         subtitle = 'You defeated the AI!';
+
         iconWidget = const Icon(
           Icons.emoji_events_rounded,
           size: 64,
@@ -170,6 +182,7 @@ class _GameScreenState extends State<GameScreen>
       } else {
         title = 'AI Wins!';
         subtitle = 'Better luck next round.';
+
         iconWidget = const Icon(
           Icons.smart_toy_rounded,
           size: 64,
@@ -186,10 +199,16 @@ class _GameScreenState extends State<GameScreen>
           backgroundColor: const Color(0xFF1E293B),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28),
-            side: const BorderSide(color: Color(0xFF334155), width: 1.5),
+            side: const BorderSide(
+              color: Color(0xFF334155),
+              width: 1.5,
+            ),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 28,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -197,6 +216,7 @@ class _GameScreenState extends State<GameScreen>
                   iconWidget,
                   const SizedBox(height: 16),
                 ],
+
                 Text(
                   title,
                   style: const TextStyle(
@@ -205,7 +225,9 @@ class _GameScreenState extends State<GameScreen>
                     color: Colors.white,
                   ),
                 ),
+
                 const SizedBox(height: 8),
+
                 Text(
                   subtitle,
                   textAlign: TextAlign.center,
@@ -214,7 +236,9 @@ class _GameScreenState extends State<GameScreen>
                     color: Color(0xFF94A3B8),
                   ),
                 ),
+
                 const SizedBox(height: 28),
+
                 Row(
                   children: [
                     Expanded(
@@ -224,8 +248,12 @@ class _GameScreenState extends State<GameScreen>
                           Navigator.of(context).pop();
                         },
                         style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          side: const BorderSide(color: Color(0xFF475569)),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                          ),
+                          side: const BorderSide(
+                            color: Color(0xFF475569),
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -239,7 +267,9 @@ class _GameScreenState extends State<GameScreen>
                         ),
                       ),
                     ),
+
                     const SizedBox(width: 12),
+
                     Expanded(
                       flex: 2,
                       child: ElevatedButton(
@@ -250,7 +280,9 @@ class _GameScreenState extends State<GameScreen>
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF38BDF8),
                           foregroundColor: const Color(0xFF0F172A),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -259,7 +291,10 @@ class _GameScreenState extends State<GameScreen>
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.replay_rounded, size: 20),
+                            Icon(
+                              Icons.replay_rounded,
+                              size: 20,
+                            ),
                             SizedBox(width: 8),
                             Text(
                               'Play Again',
@@ -284,7 +319,10 @@ class _GameScreenState extends State<GameScreen>
 
   String _getTurnStatus() {
     if (_game.isGameOver) {
-      if (_game.isTie) return 'Game ended in a draw';
+      if (_game.isTie) {
+        return 'Game ended in a draw';
+      }
+
       return 'Winner: Player ${_game.winningMatch?.winner.label}';
     }
 
@@ -303,13 +341,19 @@ class _GameScreenState extends State<GameScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0F172A),
+
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
+
         title: Text(
           widget.gameMode.title,
           style: const TextStyle(
@@ -318,18 +362,28 @@ class _GameScreenState extends State<GameScreen>
             fontSize: 18,
           ),
         ),
+
         centerTitle: true,
+
         actions: [
           IconButton(
             tooltip: 'Restart Game',
-            icon: const Icon(Icons.refresh_rounded, color: Color(0xFF94A3B8)),
+            icon: const Icon(
+              Icons.refresh_rounded,
+              color: Color(0xFF94A3B8),
+            ),
             onPressed: _resetMatch,
           ),
+
           IconButton(
             tooltip: 'Reset Scores',
-            icon: const Icon(Icons.delete_outline_rounded, color: Color(0xFF94A3B8)),
+            icon: const Icon(
+              Icons.delete_outline_rounded,
+              color: Color(0xFF94A3B8),
+            ),
             onPressed: () {
               _resetScores();
+
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Scores reset to 0'),
@@ -340,6 +394,7 @@ class _GameScreenState extends State<GameScreen>
           ),
         ],
       ),
+
       body: SafeArea(
         child: Column(
           children: [
@@ -357,7 +412,10 @@ class _GameScreenState extends State<GameScreen>
 
             // Turn status indicator banner
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 18,
+                vertical: 8,
+              ),
               decoration: BoxDecoration(
                 color: const Color(0xFF1E293B).withValues(alpha: 0.6),
                 borderRadius: BorderRadius.circular(30),
@@ -392,6 +450,7 @@ class _GameScreenState extends State<GameScreen>
                     ),
                     const SizedBox(width: 8),
                   ],
+
                   Text(
                     _getTurnStatus(),
                     style: const TextStyle(
@@ -401,6 +460,18 @@ class _GameScreenState extends State<GameScreen>
                     ),
                   ),
                 ],
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // Move counter
+            Text(
+              'Moves: ${_game.moveCount}',
+              style: const TextStyle(
+                color: Color(0xFF94A3B8),
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
               ),
             ),
 
@@ -422,11 +493,16 @@ class _GameScreenState extends State<GameScreen>
               padding: const EdgeInsets.only(bottom: 24),
               child: OutlinedButton.icon(
                 onPressed: _resetMatch,
-                icon: const Icon(Icons.refresh_rounded, size: 18),
+                icon: const Icon(
+                  Icons.refresh_rounded,
+                  size: 18,
+                ),
                 label: const Text('Reset Board'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFFCBD5E1),
-                  side: const BorderSide(color: Color(0xFF334155)),
+                  side: const BorderSide(
+                    color: Color(0xFF334155),
+                  ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
                     vertical: 12,
@@ -443,3 +519,6 @@ class _GameScreenState extends State<GameScreen>
     );
   }
 }
+
+
+
